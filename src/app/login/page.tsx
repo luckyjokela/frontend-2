@@ -24,7 +24,7 @@ export default function LoginPage() {
 
     if (data.access_token) {
       const profileRes = await fetch(
-        `${process.env.NEXT_PUBLIC_SERVER_URL}/user/me`,
+        `${process.env.NEXT_PUBLIC_SERVER_URL}/user/profile`,
         {
           credentials: "include",
         }
@@ -35,7 +35,7 @@ export default function LoginPage() {
       if (profile.role === "admin") {
         router.push("/user/admin");
       } else {
-        router.push("/user/me");
+        router.push("/user/profile");
       }
     } else {
       const errorMsg = data.error || data.message || "Authorization failed";

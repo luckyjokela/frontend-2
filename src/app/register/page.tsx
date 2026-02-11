@@ -51,7 +51,7 @@ export default function RegisterPage() {
       if (loginData.access_token) {
         try {
           const profileRes = await fetch(
-            `${process.env.NEXT_PUBLIC_SERVER_URL}/user/me`,
+            `${process.env.NEXT_PUBLIC_SERVER_URL}/user/profile`,
             {
               method: "GET",
               credentials: "include",
@@ -62,7 +62,7 @@ export default function RegisterPage() {
 
           const profile = await profileRes.json();
           login(profile.id, profile.email, profile.username);
-          router.push("/user/me");
+          router.push("/user/profile");
         } catch (error) {
           let message = "Unknown error";
           if (error instanceof Error) {
