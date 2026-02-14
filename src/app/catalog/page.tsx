@@ -143,7 +143,7 @@ export default function CatalogPage() {
                   key={product.id}
                   className="group bg-white border border-slate-100 rounded-2xl overflow-hidden hover:shadow-xl transition-all duration-300"
                 >
-                  <div className="relative aspect-[4/5] overflow-hidden bg-slate-100">
+                  <div className="relative aspect-4/5 overflow-hidden bg-slate-100">
                     <img
                       src={product.image}
                       alt={product.name}
