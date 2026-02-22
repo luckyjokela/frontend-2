@@ -108,7 +108,7 @@ export default function HomePage() {
                   <button className="absolute top-4 right-4 p-2 bg-white/80 backdrop-blur-sm rounded-full opacity-0 group-hover:opacity-100 transition duration-300 hover:text-red-500">
                     <Heart size={18} />
                   </button>
-                  <div className="absolute inset-x-0 bottom-0 p-4 translate-y-full group-hover:translate-y-0 transition duration-300 bg-gradient-to-t from-black/60 to-transparent">
+                  <div className="absolute inset-x-0 bottom-0 p-4 translate-y-full group-hover:translate-y-0 transition duration-300 bg-linear-to-t from-black/60 to-transparent">
                     <button className="w-full py-2 bg-white text-slate-900 rounded-lg text-sm font-bold hover:bg-indigo-600 hover:text-white transition">
                       В корзину
                     </button>

@@ -1,7 +1,14 @@
 import { create } from "zustand";
 
+interface ProfileData {
+  email?: string;
+  username?: string;
+  name?: string;
+  middleName?: string;
+  surname?: string;
+}
 interface UserState {
-  updateProfile: any;
+  updateProfile: (data: ProfileData) => void;
   id: string | null;
   email: string | null;
   username: string | null;
@@ -18,16 +25,16 @@ export const useUserStore = create<UserState>((set) => ({
   isAuthenticated: false,
 
   login: (id, email, username) => {
-    // localStorage.setItem("user", JSON.stringify({ id, email, username}));
     set({ id, email, username, isAuthenticated: true });
   },
 
-  logout: () => {
-    fetch('/auth/logout', { method: 'POST' });
-    
+  logout: async () => {
+    await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/auth/logout`, {
+      method: "POST",
+      credentials: "include",
+    });
     localStorage.removeItem("user");
-    localStorage.removeItem("access_token");
-    set({ id: null, email: null, isAuthenticated: false });
+    set({ id: null, email: null, username: null, isAuthenticated: false });
   },
 
   hydrate: () => {
@@ -47,14 +54,17 @@ export const useUserStore = create<UserState>((set) => ({
   }) => {
     set((state) => {
       const updated = { ...state, ...data };
-      localStorage.setItem("user", JSON.stringify({
-        id: state.id,
-        email: data.email || state.email,
-        username: data.username || state.username,
-        name: data.name,
-        middleName: data.middleName,
-        surname: data.surname,
-      }));
+      localStorage.setItem(
+        "user",
+        JSON.stringify({
+          id: state.id,
+          email: data.email || state.email,
+          username: data.username || state.username,
+          name: data.name,
+          middleName: data.middleName,
+          surname: data.surname,
+        }),
+      );
       return updated;
     });
   },

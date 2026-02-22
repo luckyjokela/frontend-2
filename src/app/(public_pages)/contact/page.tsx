@@ -150,7 +150,7 @@ export default function ContactPage() {
 
       {/* --- КАРТА (ЗАГЛУШКА) --- */}
       <section className="px-4 pb-20">
-        <div className="max-w-7xl mx-auto h-[450px] rounded-[3rem] bg-slate-100 overflow-hidden relative border border-slate-200 shadow-inner">
+        <div className="max-w-7xl mx-auto h-112.5 rounded-[3rem] bg-slate-100 overflow-hidden relative border border-slate-200 shadow-inner">
           <div className="absolute inset-0 flex flex-col items-center justify-center text-slate-400">
             <Globe size={48} className="mb-4 animate-bounce" />
             <p className="font-medium text-lg">

@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { useUserStore } from "../../store/useUserStore";
+import { useUserStore } from "@/store/useUserStore";
 
 interface AdminUser {
   id: string;

@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { useUserStore } from "../../store/useUserStore";
+import { useUserStore } from "@/store/useUserStore";
 
 export default function ProfilePage() {
   const router = useRouter();
@@ -28,7 +28,7 @@ export default function ProfilePage() {
     const fetchProfile = async () => {
       try {
         const res = await fetch(
-          `${process.env.NEXT_PUBLIC_SERVER_URL}/user/me`,
+          `${process.env.NEXT_PUBLIC_SERVER_URL}/user/profile`,
           {
             credentials: 'include',
           }

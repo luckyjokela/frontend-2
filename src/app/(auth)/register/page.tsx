@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { useUserStore } from "../store/useUserStore";
+import { useUserStore } from "../../../store/useUserStore";
 
 export default function RegisterPage() {
   const [email, setEmail] = useState("");
@@ -21,7 +21,6 @@ export default function RegisterPage() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          id: crypto.randomUUID(),
           email,
           password,
           username,
@@ -30,7 +29,7 @@ export default function RegisterPage() {
           middleName,
         }),
         credentials: "include",
-      }
+      },
     );
 
     const data = await response.json();
@@ -43,7 +42,7 @@ export default function RegisterPage() {
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ login: email, password }),
           credentials: "include",
-        }
+        },
       );
 
       const loginData = await loginRes.json();
@@ -55,7 +54,7 @@ export default function RegisterPage() {
             {
               method: "GET",
               credentials: "include",
-            }
+            },
           );
 
           if (!profileRes.ok) throw new Error("Profile fetch failed");

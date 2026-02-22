@@ -3,7 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
-import { useUserStore } from "../store/useUserStore";
+import { useUserStore } from "../../store/useUserStore";
 import { usePathname } from "next/navigation";
 import { useRouter } from "next/navigation";
 import { ShoppingCart, Search, Menu } from "lucide-react";

@@ -1,8 +1,10 @@
-import { UserProvider } from "./components/UserProvider";
+import { UserProvider } from "@/components/UserProvider";
 import { Geist, Geist_Mono } from "next/font/google";
-import "./globals.css";
-import { NavTop } from './components/NavTop';
-import SiteFooter from "./components/Footer";
+import "./css/globals.css";
+import { NavTop } from '@/components/layout/NavTop';
+import SiteFooter from "@/components/layout/Footer";
+import { useEffect } from "react";
+import { useUserStore } from "@/store/useUserStore";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -12,6 +14,10 @@ const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
   subsets: ["latin"],
 });
+
+useEffect(() => {
+  useUserStore.getState().hydrate();
+}, []);
 
 export default function RootLayout({
   children,

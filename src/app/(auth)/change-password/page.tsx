@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { useUserStore } from "../store/useUserStore";
+import { useUserStore } from "@/store/useUserStore";
 
 export default function ChangePasswordPage() {
   const router = useRouter();
@@ -32,12 +32,10 @@ export default function ChangePasswordPage() {
       `${process.env.NEXT_PUBLIC_SERVER_URL}/users/change-password`,
       {
         method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${localStorage.getItem("access_token")}`,
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ oldPassword, newPassword }),
-      }
+        credentials: "include",
+      },
     );
 
     const data = await response.json();
@@ -51,7 +49,6 @@ export default function ChangePasswordPage() {
     }
   };
 
-  // Если ещё идёт проверка
   if (!isAuthenticated) {
     return <div>Redirecting...</div>;
   }
