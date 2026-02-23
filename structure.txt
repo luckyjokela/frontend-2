@@ -1,4 +1,3 @@
-
 |   .env
 |   .env.example
 |   .gitignore
@@ -13,7 +12,7 @@
 |   README.md
 |   structure.txt
 |   tsconfig.json
-| 
+|                  
 +---public
 |       file.svg
 |       globe.svg
@@ -34,7 +33,6 @@
     +---app
     |   |   error.tsx
     |   |   favicon.ico
-    |   |   globals.css
     |   |   layout.tsx
     |   |   not-found.tsx
     |   |   
@@ -57,21 +55,24 @@
     |   |       \---profile
     |   |               page.tsx
     |   |               
-    |   \---(public_pages)
-    |       |   page.tsx
-    |       |   
-    |       +---about
-    |       |       page.tsx
-    |       |       
-    |       +---catalog
-    |       |       page.tsx
-    |       |       
-    |       +---contact
-    |       |       page.tsx
-    |       |       
-    |       \---new-arrivals
-    |               page.tsx
-    |               
+    |   +---(public_pages)
+    |   |   |   page.tsx
+    |   |   |   
+    |   |   +---about
+    |   |   |       page.tsx
+    |   |   |       
+    |   |   +---catalog
+    |   |   |       page.tsx
+    |   |   |       
+    |   |   +---contact
+    |   |   |       page.tsx
+    |   |   |       
+    |   |   \---new-arrivals
+    |   |           page.tsx
+    |   |           
+    |   \---css
+    |           globals.css
+    |           
     +---components
     |   |   UserProvider.tsx
     |   |   
