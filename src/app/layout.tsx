@@ -1,10 +1,10 @@
+import { useEffect } from "react";
 import { UserProvider } from "@/components/UserProvider";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./css/globals.css";
-import { NavTop } from '@/components/layout/NavTop';
+import { NavTop } from "@/components/layout/NavTop";
 import SiteFooter from "@/components/layout/Footer";
-import { useEffect } from "react";
-import { useUserStore } from "@/store/useUserStore";
+import { StoreHydrator } from "../components/shared/StoreHydrator";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -15,10 +15,6 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-useEffect(() => {
-  useUserStore.getState().hydrate();
-}, []);
-
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -27,9 +23,11 @@ export default function RootLayout({
   return (
     <html lang="ru">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`} suppressHydrationWarning
+        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        suppressHydrationWarning
       >
-        <NavTop/>
+        <StoreHydrator />
+        <NavTop />
         <UserProvider>{children}</UserProvider>
         <SiteFooter />
       </body>
