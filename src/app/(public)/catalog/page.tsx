@@ -1,101 +1,113 @@
 "use client";
 
-import React, { useState } from "react";
-import {
-  Filter,
-  ChevronDown,
-  LayoutGrid,
-  List,
-  SlidersHorizontal,
-} from "lucide-react";
+import { useState } from "react";
+import { Heart, Star, Filter, ChevronDown, LayoutGrid, List } from "lucide-react";
 
-// Расширенные данные товаров
-const allProducts = [
+const cakes = [
   {
     id: 1,
-    name: "Стильные Часы",
+    name: "Свадебный торт",
     price: 12500,
-    category: "Аксессуары",
-    image: "https://images.unsplash.com",
+    category: "Свадебные",
+    image: "https://images.unsplash.com/photo-1535254973040-607b474cb50d?w=600&h=600&fit=crop",
+    rating: 4.9,
+    description: "Многоярусный торт с мастикой",
   },
   {
     id: 2,
-    name: "Беспроводные Наушники",
+    name: "Шоколадный трюфель",
     price: 8900,
-    category: "Электроника",
-    image: "https://images.unsplash.com",
+    category: "Шоколадные",
+    image: "https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=600&h=600&fit=crop",
+    rating: 4.8,
+    description: "Насыщенный шоколад с ганашем",
   },
   {
     id: 3,
-    name: "Кожаный Рюкзак",
-    price: 5400,
-    category: "Сумки",
-    image: "https://images.unsplash.com",
+    name: "Ягодный микс",
+    price: 7400,
+    category: "Ягодные",
+    image: "https://images.unsplash.com/photo-1464349095431-e9a21285b5f3?w=600&h=600&fit=crop",
+    rating: 4.7,
+    description: "Свежие ягоды и лёгкий крем",
   },
   {
     id: 4,
-    name: "Умная Колонка",
-    price: 15000,
-    category: "Электроника",
-    image: "https://images.unsplash.com",
+    name: "Веганский чизкейк",
+    price: 6500,
+    category: "Веганские",
+    image: "https://images.unsplash.com/photo-1565958011703-44f9829ba187?w=600&h=600&fit=crop",
+    rating: 4.8,
+    description: "Без молочных продуктов",
   },
   {
     id: 5,
-    name: "Минималистичный Светильник",
-    price: 3200,
-    category: "Дом",
-    image: "https://images.unsplash.com",
+    name: "Красный бархат",
+    price: 9200,
+    category: "Классические",
+    image: "https://images.unsplash.com/photo-1586985289688-ca3cf47d3e6e?w=600&h=600&fit=crop",
+    rating: 4.9,
+    description: "Классический американский торт",
   },
   {
     id: 6,
-    name: "Керамическая Ваза",
-    price: 2100,
-    category: "Дом",
-    image: "https://images.unsplash.com",
+    name: "Детский праздник",
+    price: 8500,
+    category: "Детские",
+    image: "https://images.unsplash.com/photo-1558301211-0d8c8ddee6ec?w=600&h=600&fit=crop",
+    rating: 4.6,
+    description: "Яркий торт с фигурками",
   },
 ];
 
-const categories = ["Все", "Электроника", "Аксессуары", "Сумки", "Дом"];
+const categories = ["Все", "Свадебные", "Шоколадные", "Ягодные", "Веганские", "Классические", "Детские"];
 
 export default function CatalogPage() {
   const [activeCategory, setActiveCategory] = useState("Все");
+  const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
+  const [sortBy, setSortBy] = useState<"popular" | "price-asc" | "price-desc">("popular");
 
-  const filteredProducts =
-    activeCategory === "Все"
-      ? allProducts
-      : allProducts.filter((p) => p.category === activeCategory);
+  const filteredProducts = activeCategory === "Все"
+    ? cakes
+    : cakes.filter((c) => c.category === activeCategory);
+
+  const sortedProducts = [...filteredProducts].sort((a, b) => {
+    if (sortBy === "price-asc") return a.price - b.price;
+    if (sortBy === "price-desc") return b.price - a.price;
+    return b.rating - a.rating;
+  });
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-gradient-to-br from-pink-50 via-rose-50 to-white">
       {/* --- ЗАГОЛОВОК --- */}
-      <header className="bg-slate-50 border-b border-slate-200 py-12">
+      <header className="bg-white/80 backdrop-blur-md border-b border-rose-200 py-12">
         <div className="max-w-7xl mx-auto px-4">
           <h1 className="text-4xl font-extrabold text-slate-900 mb-2">
-            Каталог товаров
+            Каталог тортов
           </h1>
-          <p className="text-slate-500">
-            Найдено {filteredProducts.length} предметов
+          <p className="text-slate-600">
+            Найдено {sortedProducts.length} тортов
           </p>
         </div>
       </header>
 
       <main className="max-w-7xl mx-auto px-4 py-8">
         <div className="flex flex-col lg:flex-row gap-8">
-          {/* --- ФИЛЬТРЫ (Sidebar) --- */}
-          <aside className="w-full lg:w-64 space-y-8">
-            <div>
-              <h3 className="font-bold mb-4 flex items-center gap-2">
-                <SlidersHorizontal size={18} /> Категории
+          {/* --- ФИЛЬТРЫ --- */}
+          <aside className="w-full lg:w-64 space-y-6">
+            <div className="bg-white rounded-2xl shadow-sm p-6">
+              <h3 className="font-bold mb-4 flex items-center gap-2 text-slate-800">
+                <Filter size={18} /> Категории
               </h3>
               <div className="space-y-2">
                 {categories.map((cat) => (
                   <button
                     key={cat}
                     onClick={() => setActiveCategory(cat)}
-                    className={`block w-full text-left px-3 py-2 rounded-lg text-sm transition ${
+                    className={`block w-full text-left px-4 py-2.5 rounded-xl text-sm font-medium transition-all ${
                       activeCategory === cat
-                        ? "bg-indigo-600 text-white font-medium"
-                        : "text-slate-600 hover:bg-slate-100"
+                        ? "bg-rose-600 text-white shadow-md"
+                        : "text-slate-600 hover:bg-rose-50"
                     }`}
                   >
                     {cat}
@@ -104,13 +116,14 @@ export default function CatalogPage() {
               </div>
             </div>
 
-            <div className="pt-6 border-t border-slate-100">
-              <h3 className="font-bold mb-4">Цена</h3>
+            <div className="bg-white rounded-2xl shadow-sm p-6">
+              <h3 className="font-bold mb-4 text-slate-800">Цена</h3>
               <input
                 type="range"
-                className="w-full accent-indigo-600"
+                className="w-full accent-rose-600"
                 min="0"
                 max="20000"
+                step="500"
               />
               <div className="flex justify-between text-xs text-slate-500 mt-2">
                 <span>0 ₽</span>
@@ -121,61 +134,102 @@ export default function CatalogPage() {
 
           {/* --- СЕТКА ТОВАРОВ --- */}
           <div className="flex-1">
-            {/* Панель управления сеткой */}
-            <div className="flex justify-between items-center mb-8 bg-slate-50 p-4 rounded-xl">
+            {/* Панель управления */}
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 bg-white rounded-2xl shadow-sm p-4 gap-4">
               <div className="flex gap-2">
-                <button className="p-2 bg-white rounded shadow-sm text-indigo-600">
+                <button
+                  onClick={() => setViewMode("grid")}
+                  className={`p-2.5 rounded-lg transition ${
+                    viewMode === "grid"
+                      ? "bg-rose-100 text-rose-600"
+                      : "text-slate-400 hover:text-slate-600"
+                  }`}
+                >
                   <LayoutGrid size={20} />
                 </button>
-                <button className="p-2 text-slate-400 hover:text-slate-600">
+                <button
+                  onClick={() => setViewMode("list")}
+                  className={`p-2.5 rounded-lg transition ${
+                    viewMode === "list"
+                      ? "bg-rose-100 text-rose-600"
+                      : "text-slate-400 hover:text-slate-600"
+                  }`}
+                >
                   <List size={20} />
                 </button>
               </div>
-              <button className="flex items-center gap-2 text-sm font-medium text-slate-700 hover:text-indigo-600">
-                Сортировка <ChevronDown size={16} />
-              </button>
+              
+              <select
+                value={sortBy}
+                onChange={(e) => setSortBy(e.target.value as any)}
+                className="px-4 py-2.5 border border-slate-200 rounded-xl text-sm font-medium text-slate-700 focus:outline-none focus:ring-2 focus:ring-rose-500"
+              >
+                <option value="popular">По популярности</option>
+                <option value="price-asc">Сначала дешёвые</option>
+                <option value="price-desc">Сначала дорогие</option>
+              </select>
             </div>
 
             {/* Товары */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">
-              {filteredProducts.map((product) => (
+            <div className={`grid gap-6 ${
+              viewMode === "grid" 
+                ? "grid-cols-1 sm:grid-cols-2 xl:grid-cols-3" 
+                : "grid-cols-1"
+            }`}>
+              {sortedProducts.map((cake) => (
                 <div
-                  key={product.id}
-                  className="group bg-white border border-slate-100 rounded-2xl overflow-hidden hover:shadow-xl transition-all duration-300"
+                  key={cake.id}
+                  className={`group bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 border border-rose-100 ${
+                    viewMode === "list" ? "flex" : ""
+                  }`}
                 >
-                  <div className="relative aspect-4/5 overflow-hidden bg-slate-100">
+                  <div className={`relative ${
+                    viewMode === "list" ? "w-1/3" : "aspect-square"
+                  } overflow-hidden bg-slate-100`}>
                     <img
-                      src={product.image}
-                      alt={product.name}
-                      className="w-full h-full object-cover transition duration-500 group-hover:scale-105"
+                      src={cake.image}
+                      alt={cake.name}
+                      className="w-full h-full object-cover transition duration-500 group-hover:scale-110"
+                      onError={(e) => {
+                        (e.target as HTMLImageElement).src = 
+                          `https://via.placeholder.com/400x400/fce7f3/f43f5e?text=${encodeURIComponent(cake.name)}`;
+                      }}
                     />
                     <div className="absolute top-3 left-3">
-                      <span className="bg-white/90 backdrop-blur-sm px-2 py-1 rounded-md text-[10px] font-bold uppercase tracking-wider text-slate-600 shadow-sm">
-                        {product.category}
+                      <span className="bg-white/95 backdrop-blur-sm px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider text-rose-600 shadow-sm">
+                        {cake.category}
                       </span>
                     </div>
-                  </div>
-                  <div className="p-5">
-                    <h3 className="font-bold text-slate-800 mb-1 group-hover:text-indigo-600 transition-colors">
-                      {product.name}
-                    </h3>
-                    <p className="text-xl font-black text-slate-900 mb-4">
-                      {product.price.toLocaleString()} ₽
-                    </p>
-                    <button className="w-full py-3 bg-slate-900 text-white rounded-xl font-bold text-sm hover:bg-indigo-600 transition-colors transform active:scale-95">
-                      Добавить в корзину
+                    <button className="absolute top-3 right-3 p-2 bg-white/95 backdrop-blur-sm rounded-full opacity-0 group-hover:opacity-100 transition duration-300 hover:text-red-500 hover:scale-110 shadow-md">
+                      <Heart size={18} />
                     </button>
+                  </div>
+                  
+                  <div className={`p-5 ${viewMode === "list" ? "flex-1" : ""}`}>
+                    <div className="flex items-center gap-1 mb-2">
+                      <Star size={14} className="text-yellow-500 fill-yellow-500" />
+                      <span className="text-sm font-medium text-slate-600">{cake.rating}</span>
+                    </div>
+                    <h3 className="font-bold text-lg text-slate-800 mb-2 group-hover:text-rose-600 transition-colors">
+                      {cake.name}
+                    </h3>
+                    <p className="text-sm text-slate-500 mb-4">{cake.description}</p>
+                    <div className="flex items-center justify-between">
+                      <p className="text-2xl font-black text-rose-600">
+                        {cake.price.toLocaleString()} ₽
+                      </p>
+                      <button className="px-6 py-2.5 bg-rose-600 text-white rounded-xl font-bold text-sm hover:bg-rose-700 transition-colors shadow-lg shadow-rose-200 hover:shadow-xl hover:shadow-rose-300 transform active:scale-95">
+                        В корзину
+                      </button>
+                    </div>
                   </div>
                 </div>
               ))}
             </div>
 
-            {/* Заглушка, если ничего не найдено */}
-            {filteredProducts.length === 0 && (
-              <div className="text-center py-20">
-                <p className="text-slate-400 text-lg">
-                  В этой категории пока нет товаров.
-                </p>
+            {sortedProducts.length === 0 && (
+              <div className="text-center py-20 bg-white rounded-2xl">
+                <p className="text-slate-400 text-lg">В этой категории пока нет тортов.</p>
               </div>
             )}
           </div>

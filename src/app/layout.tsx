@@ -1,4 +1,3 @@
-import { useEffect } from "react";
 import { UserProvider } from "@/components/UserProvider";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./css/globals.css";

@@ -2,204 +2,239 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { useUserStore } from "../../../store/useUserStore";
+import Link from "next/link";
+import { Cake, Eye, EyeOff } from "lucide-react";
 
 export default function RegisterPage() {
-  const [email, setEmail] = useState("");
-  const [username, setUsername] = useState("");
-  const [name, setName] = useState("");
-  const [surname, setSurname] = useState("");
-  const [middleName, setMiddleName] = useState("");
-  const [password, setPassword] = useState("");
+  const [formData, setFormData] = useState({
+    email: "",
+    username: "",
+    name: "",
+    surname: "",
+    middleName: "",
+    password: "",
+    confirmPassword: "",
+  });
+  const [showPassword, setShowPassword] = useState(false);
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
   const router = useRouter();
-  const { login } = useUserStore();
 
-  const handleRegister = async () => {
-    const response = await fetch(
-      `${process.env.NEXT_PUBLIC_SERVER_URL}/auth/register`,
-      {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          email,
-          password,
-          username,
-          name,
-          surname,
-          middleName,
-        }),
-        credentials: "include",
-      },
-    );
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError("");
 
-    const data = await response.json();
+    if (formData.password !== formData.confirmPassword) {
+      setError("Пароли не совпадают");
+      return;
+    }
 
-    if (response.ok && data.success) {
-      const loginRes = await fetch(
-        `${process.env.NEXT_PUBLIC_SERVER_URL}/auth/login`,
+    if (formData.password.length < 6) {
+      setError("Пароль должен содержать минимум 6 символов");
+      return;
+    }
+
+    setLoading(true);
+
+    try {
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_SERVER_URL}/auth/register`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ login: email, password }),
+          body: JSON.stringify({
+            email: formData.email,
+            username: formData.username,
+            name: formData.name,
+            surname: formData.surname,
+            middleName: formData.middleName,
+            password: formData.password,
+          }),
           credentials: "include",
         },
       );
 
-      const loginData = await loginRes.json();
+      const data = await response.json();
 
-      if (loginData.access_token) {
-        try {
-          const profileRes = await fetch(
-            `${process.env.NEXT_PUBLIC_SERVER_URL}/user/profile`,
-            {
-              method: "GET",
-              credentials: "include",
-            },
-          );
-
-          if (!profileRes.ok) throw new Error("Profile fetch failed");
-
-          const profile = await profileRes.json();
-          login(profile.id, profile.email, profile.username);
-          router.push("/user/profile");
-        } catch (error) {
-          let message = "Unknown error";
-          if (error instanceof Error) {
-            message = error.message;
-          }
-          alert("Failed to load profile: " + message);
-          console.error(error);
-        }
+      if (!response.ok) {
+        throw new Error(data.error || data.message || "Ошибка регистрации");
       }
-    } else {
-      const errorMsg = data.error || data.message || "Registration failed";
-      alert(errorMsg);
+
+      alert("Регистрация успешна! Теперь вы можете войти.");
+      router.push("/login");
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Произошла ошибка");
+      console.error(err);
+    } finally {
+      setLoading(false);
     }
   };
 
-  return (
-    <div className="min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-md w-full space-y-8 bg-white p-8 rounded-lg shadow-lg">
-        <div>
-          <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
-            Create your account
-          </h2>
-        </div>
-        <form
-          className="mt-8 space-y-6"
-          onSubmit={(e) => {
-            e.preventDefault();
-            handleRegister();
-          }}
-        >
-          <div className="rounded-sm shadow-sm -space-y-px">
-            <div className="p-3">
-              <label htmlFor="email-address" className="sr-only">
-                Email
-              </label>
-              <input
-                onChange={(e) => setEmail(e.target.value)}
-                value={email}
-                id="email-address"
-                name="email-address"
-                type="email"
-                autoComplete="email"
-                required
-                className="appearance-none rounded-sm relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
-                placeholder="Email address"
-              />
-            </div>
-            <div className="p-3">
-              <label htmlFor="username" className="sr-only">
-                Username
-              </label>
-              <input
-                onChange={(e) => setUsername(e.target.value)}
-                value={username}
-                id="username"
-                name="username"
-                type="text"
-                autoComplete="username"
-                required
-                className="appearance-none rounded-sm relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
-                placeholder="Username"
-              />
-            </div>
-            <div className="p-3">
-              <label htmlFor="name" className="sr-only">
-                Name
-              </label>
-              <input
-                onChange={(e) => setName(e.target.value)}
-                value={name}
-                id="name"
-                name="name"
-                type="text"
-                autoComplete="name"
-                required
-                className="appearance-none rounded-sm relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
-                placeholder="Your Name"
-              />
-            </div>
-            <div className="p-3">
-              <label htmlFor="surname" className="sr-only">
-                Surname
-              </label>
-              <input
-                onChange={(e) => setSurname(e.target.value)}
-                value={surname}
-                id="surname"
-                name="surname"
-                type="text"
-                autoComplete="surname"
-                required
-                className="appearance-none rounded-sm relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
-                placeholder="Your Surname"
-              />
-            </div>
-            <div className="p-3">
-              <label htmlFor="middleName" className="sr-only">
-                Middle Name
-              </label>
-              <input
-                onChange={(e) => setMiddleName(e.target.value)}
-                value={middleName}
-                id="middleName"
-                name="middleName"
-                type="text"
-                autoComplete="middleName"
-                required
-                className="appearance-none rounded-sm relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
-                placeholder="Your Middle Name"
-              />
-            </div>
-            <div className="p-3">
-              <label htmlFor="password" className="sr-only">
-                Password
-              </label>
-              <input
-                onChange={(e) => setPassword(e.target.value)}
-                value={password}
-                id="password"
-                name="password"
-                type="password"
-                autoComplete="new-password"
-                required
-                className="appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
-                placeholder="Password"
-              />
-            </div>
-          </div>
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
 
-          <div>
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-pink-50 via-rose-50 to-white flex items-center justify-center py-12 px-4">
+      <div className="max-w-md w-full">
+        {/* Logo */}
+        <div className="text-center mb-8">
+          <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-pink-500 to-rose-600 rounded-full shadow-lg mb-4">
+            <Cake className="text-white" size={32} />
+          </div>
+          <h1 className="text-3xl font-bold text-slate-900">Создать аккаунт</h1>
+          <p className="text-slate-600 mt-2">Присоединяйтесь к CakeCraft</p>
+        </div>
+
+        {/* Form */}
+        <div className="bg-white rounded-3xl shadow-xl p-8">
+          {error && (
+            <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-xl text-red-700 text-sm">
+              {error}
+            </div>
+          )}
+
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-semibold text-slate-700 mb-2">
+                  Имя *
+                </label>
+                <input
+                  name="name"
+                  value={formData.name}
+                  onChange={handleChange}
+                  type="text"
+                  required
+                  disabled={loading}
+                  className="w-full px-4 py-3 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-rose-500/20 focus:border-rose-500 transition-all text-slate-900"
+                  placeholder="Иван"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-semibold text-slate-700 mb-2">
+                  Фамилия *
+                </label>
+                <input
+                  name="surname"
+                  value={formData.surname}
+                  onChange={handleChange}
+                  type="text"
+                  required
+                  disabled={loading}
+                  className="w-full px-4 py-3 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-rose-500/20 focus:border-rose-500 transition-all text-slate-900"
+                  placeholder="Иванов"
+                />
+              </div>
+            </div>
+
+            <div>
+              <label className="block text-sm font-semibold text-slate-700 mb-2">
+                Отчество
+              </label>
+              <input
+                name="middleName"
+                value={formData.middleName}
+                onChange={handleChange}
+                type="text"
+                disabled={loading}
+                className="w-full px-4 py-3 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-rose-500/20 focus:border-rose-500 transition-all text-slate-900"
+                placeholder="Иванович"
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-semibold text-slate-700 mb-2">
+                Email *
+              </label>
+              <input
+                name="email"
+                value={formData.email}
+                onChange={handleChange}
+                type="email"
+                required
+                disabled={loading}
+                className="w-full px-4 py-3 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-rose-500/20 focus:border-rose-500 transition-all text-slate-900"
+                placeholder="example@mail.com"
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-semibold text-slate-700 mb-2">
+                Имя пользователя *
+              </label>
+              <input
+                name="username"
+                value={formData.username}
+                onChange={handleChange}
+                type="text"
+                required
+                disabled={loading}
+                className="w-full px-4 py-3 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-rose-500/20 focus:border-rose-500 transition-all text-slate-900"
+                placeholder="ivan123"
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-semibold text-slate-700 mb-2">
+                Пароль *
+              </label>
+              <div className="relative">
+                <input
+                  name="password"
+                  value={formData.password}
+                  onChange={handleChange}
+                  type={showPassword ? "text" : "password"}
+                  required
+                  disabled={loading}
+                  className="w-full px-4 py-3 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-rose-500/20 focus:border-rose-500 transition-all text-slate-900 pr-12"
+                  placeholder="••••••••"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 transition"
+                >
+                  {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                </button>
+              </div>
+            </div>
+
+            <div>
+              <label className="block text-sm font-semibold text-slate-700 mb-2">
+                Подтвердите пароль *
+              </label>
+              <input
+                name="confirmPassword"
+                value={formData.confirmPassword}
+                onChange={handleChange}
+                type="password"
+                required
+                disabled={loading}
+                className="w-full px-4 py-3 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-rose-500/20 focus:border-rose-500 transition-all text-slate-900"
+                placeholder="••••••••"
+              />
+            </div>
+
             <button
               type="submit"
-              className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+              disabled={loading}
+              className="w-full py-3.5 bg-rose-600 text-white rounded-xl font-bold hover:bg-rose-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-lg shadow-rose-200 hover:shadow-xl hover:shadow-rose-300 mt-6"
             >
-              Sign up
+              {loading ? "Регистрация..." : "Зарегистрироваться"}
             </button>
+          </form>
+
+          <div className="mt-6 text-center text-sm text-slate-600">
+            Уже есть аккаунт?{" "}
+            <Link
+              href="/login"
+              className="text-rose-600 font-bold hover:text-rose-700"
+            >
+              Войти
+            </Link>
           </div>
-        </form>
+        </div>
       </div>
     </div>
   );
