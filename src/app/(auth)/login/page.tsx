@@ -6,6 +6,9 @@ import Link from "next/link";
 import { useUserStore } from "@/store/useUserStore";
 import { Cake, Eye, EyeOff } from "lucide-react";
 
+const API_BASE = "/api";
+// const API_BASE = 'http://localhost:3001/';
+
 export default function LoginPage() {
   const [identifier, setIdentifier] = useState("");
   const [password, setPassword] = useState("");
@@ -22,7 +25,7 @@ export default function LoginPage() {
 
     try {
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_SERVER_URL}/auth/login`,
+        `${API_BASE}/auth/login`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -38,7 +41,7 @@ export default function LoginPage() {
       }
 
       const profileRes = await fetch(
-        `${process.env.NEXT_PUBLIC_SERVER_URL}/user/profile`,
+        `${API_BASE}/user/profile`,
         {
           method: "GET",
           credentials: "include",
@@ -48,7 +51,9 @@ export default function LoginPage() {
       if (!profileRes.ok) throw new Error("Не удалось загрузить профиль");
 
       const profile = await profileRes.json();
-      login(profile.id, profile.email, profile.username);
+      // login(profile.id, profile.email, profile.username);
+      // login(profile.userId, profile.email, profile.username);
+       login(profile.id, profile.email, profile.username);
 
       router.push("/user/profile");
       router.refresh();
@@ -61,7 +66,7 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-pink-50 via-rose-50 to-white flex items-center justify-center py-12 px-4">
+    <div className="min-h-screen bg-linear-to-br from-pink-50 via-rose-50 to-white flex items-center justify-center py-12 px-4">
       <div className="max-w-md w-full">
         {/* Logo */}
         <div className="text-center mb-8">

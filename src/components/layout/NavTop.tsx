@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { ShoppingCart, Search, Menu, Cake, User } from "lucide-react";
+import { ShoppingCart, Search, Menu, Cake } from "lucide-react";
 import SearchModal from "@/components/ui/SearchModal";
 import CartModal from "@/components/ui/CartModal";
 import UserMenu from "@/components/ui/UserMenu";

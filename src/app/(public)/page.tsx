@@ -6,7 +6,7 @@ const cakes = [
   {
     id: 1,
     name: "Свадебный торт",
-    price: "12 500 ₽",
+    price: "10 500 ₽",
     category: "Свадебные",
     image:
       "https://images.unsplash.com/photo-1535254973040-607b474cb50d?w=600&h=600&fit=crop",
@@ -15,7 +15,7 @@ const cakes = [
   {
     id: 2,
     name: "Шоколадный трюфель",
-    price: "8 900 ₽",
+    price: "7 900 ₽",
     category: "Шоколадные",
     image:
       "https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=600&h=600&fit=crop",
@@ -24,7 +24,7 @@ const cakes = [
   {
     id: 3,
     name: "Ягодный микс",
-    price: "7 400 ₽",
+    price: "5 400 ₽",
     category: "Ягодные",
     image:
       "https://images.unsplash.com/photo-1464349095431-e9a21285b5f3?w=600&h=600&fit=crop",
@@ -33,7 +33,7 @@ const cakes = [
   {
     id: 4,
     name: "Веганский чизкейк",
-    price: "6 500 ₽",
+    price: "3 500 ₽",
     category: "Веганские",
     image:
       "https://images.unsplash.com/photo-1565958011703-44f9829ba187?w=600&h=600&fit=crop",

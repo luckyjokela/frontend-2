@@ -7,7 +7,7 @@ const cakes = [
   {
     id: 1,
     name: "Свадебный торт",
-    price: 12500,
+    price: 10500,
     category: "Свадебные",
     image: "https://images.unsplash.com/photo-1535254973040-607b474cb50d?w=600&h=600&fit=crop",
     rating: 4.9,
@@ -16,7 +16,7 @@ const cakes = [
   {
     id: 2,
     name: "Шоколадный трюфель",
-    price: 8900,
+    price: 7900,
     category: "Шоколадные",
     image: "https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=600&h=600&fit=crop",
     rating: 4.8,
@@ -25,7 +25,7 @@ const cakes = [
   {
     id: 3,
     name: "Ягодный микс",
-    price: 7400,
+    price: 5400,
     category: "Ягодные",
     image: "https://images.unsplash.com/photo-1464349095431-e9a21285b5f3?w=600&h=600&fit=crop",
     rating: 4.7,
@@ -34,7 +34,7 @@ const cakes = [
   {
     id: 4,
     name: "Веганский чизкейк",
-    price: 6500,
+    price: 3500,
     category: "Веганские",
     image: "https://images.unsplash.com/photo-1565958011703-44f9829ba187?w=600&h=600&fit=crop",
     rating: 4.8,
@@ -43,7 +43,7 @@ const cakes = [
   {
     id: 5,
     name: "Красный бархат",
-    price: 9200,
+    price: 7200,
     category: "Классические",
     image: "https://images.unsplash.com/photo-1586985289688-ca3cf47d3e6e?w=600&h=600&fit=crop",
     rating: 4.9,
@@ -52,7 +52,7 @@ const cakes = [
   {
     id: 6,
     name: "Детский праздник",
-    price: 8500,
+    price: 5500,
     category: "Детские",
     image: "https://images.unsplash.com/photo-1558301211-0d8c8ddee6ec?w=600&h=600&fit=crop",
     rating: 4.6,

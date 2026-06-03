@@ -11,11 +11,11 @@ import {
 } from "lucide-react";
 
 const CAKE_TYPES = [
-  { id: 1, name: "Классический", price: 3500, image: "🎂" },
+  { id: 1, name: "Классический", price: 2500, image: "🎂" },
   { id: 2, name: "Свадебный", price: 5500, image: "💒" },
-  { id: 3, name: "Детский", price: 4000, image: "🎈" },
+  { id: 3, name: "Детский", price: 3500, image: "🎈" },
   { id: 4, name: "Шоколадный", price: 4500, image: "🍫" },
-  { id: 5, name: "Ягодный", price: 4200, image: "" },
+  { id: 5, name: "Ягодный", price: 4200, image: "🍓" },
   { id: 6, name: "Веганский", price: 4800, image: "🌱" },
 ];
 
@@ -53,6 +53,7 @@ export default function CakeBuilder() {
   const [selectedDecoration, setSelectedDecoration] = useState<number>(1);
   const [weight, setWeight] = useState<number>(2);
   const [date, setDate] = useState<string>("");
+  const [comment, setComment] = useState<string>("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -133,12 +134,29 @@ export default function CakeBuilder() {
     setIsSubmitting(true);
 
     try {
+      // Формируем данные заказа
+      const orderData = {
+        cakeType: selectedType,
+        layers: selectedLayers,
+        fillings: selectedFillings,
+        decoration: selectedDecoration,
+        weight,
+        requestedDate: date,
+        comment: comment.trim(), // <-- Поле для пожеланий
+        totalPrice,
+      };
+
       // Здесь будет fetch к твоему API
-      // const res = await fetch("/api/orders", { method: "POST", body: JSON.stringify({...}) });
+      // const res = await fetch("/api/orders", {
+      //   method: "POST",
+      //   headers: { "Content-Type": "application/json" },
+      //   body: JSON.stringify(orderData)
+      // });
 
       // Для демо просто эмулируем задержку
       await new Promise((res) => setTimeout(res, 800));
       alert("✅ Заказ успешно создан! (Демо-режим)");
+
       // Сброс формы при успехе
       setStep(1);
       setSelectedType(null);
@@ -147,6 +165,7 @@ export default function CakeBuilder() {
       setSelectedDecoration(1);
       setWeight(2);
       setDate("");
+      setComment(""); // <-- Очищаем комментарий
     } catch (err) {
       setError("Ошибка при оформлении. Попробуйте позже.");
     } finally {
@@ -407,6 +426,28 @@ export default function CakeBuilder() {
                   min={minDate}
                   className="w-full p-4 border-2 border-slate-200 rounded-xl focus:border-rose-500 focus:outline-none transition text-slate-800"
                 />
+              </div>
+
+              {/* Поле для комментариев */}
+              <div>
+                <p className="font-medium text-slate-700 mb-3">
+                  Пожелания к оформлению:
+                </p>
+                <textarea
+                  value={comment}
+                  onChange={(e) => setComment(e.target.value)}
+                  placeholder="Например:
+• Написать 'С Днём Рождения, Анна!'
+• Не использовать орехи
+• Сделать в розовых тонах
+• Добавить больше ягод"
+                  rows={4}
+                  maxLength={500}
+                  className="w-full p-4 border-2 border-slate-200 rounded-xl focus:border-rose-500 focus:outline-none transition text-slate-800 resize-none placeholder:text-slate-400"
+                />
+                <p className="text-xs text-slate-500 mt-2 text-right">
+                  {comment.length}/500
+                </p>
               </div>
             </div>
           )}

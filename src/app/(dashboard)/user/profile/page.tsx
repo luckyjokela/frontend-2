@@ -32,40 +32,67 @@ export default function ProfilePage() {
   const [loading, setLoading] = useState(true);
   const [editMode, setEditMode] = useState(false);
 
+  // useEffect(() => {
+  //   if (!isAuthenticated) {
+  //     router.push("/login");
+  //     return;
+  //   }
+
+  //   const fetchProfile = async () => {
+  //     try {
+  //       const res = await fetch(
+  //         `${process.env.NEXT_PUBLIC_SERVER_URL}/user/profile`,
+  //         { credentials: "include" },
+  //       );
+
+  //       if (!res.ok) throw new Error("Не удалось загрузить профиль");
+
+  //       const data = await res.json();
+
+  //       setForm({
+  //         email: data.email,
+  //         username: data.username,
+  //         name: data.name,
+  //         middleName: data.middleName || "",
+  //         surname: data.surname,
+  //       });
+  //     } catch (err) {
+  //       console.error(err);
+  //       alert("Ошибка загрузки профиля");
+  //     } finally {
+  //       setLoading(false);
+  //     }
+  //   };
+
+  //   fetchProfile();
+  // }, [isAuthenticated, router]);
+
   useEffect(() => {
-    if (!isAuthenticated) {
-      router.push("/login");
-      return;
+    // Для демо: загружаем профиль если есть данные, иначе моковые
+    if (!isAuthenticated || isAuthenticated) {
+  //     fetchProfile(
+        //         const data = await res.json();
+
+        // setForm({
+        //   email: data.email,
+        //   username: data.username,
+        //   name: data.name,
+        //   middleName: data.middleName || "",
+        //   surname: data.surname,
+        // });
+  //     );
+    } else {
+      // Моковые данные для демо
+      setForm({
+        email: "demo@cakecraft.ru",
+        username: "DemoUser",
+        name: "Демо",
+        middleName: "",
+        surname: "Пользователь",
+      });
+      setLoading(false);
     }
-
-    const fetchProfile = async () => {
-      try {
-        const res = await fetch(
-          `${process.env.NEXT_PUBLIC_SERVER_URL}/user/profile`,
-          { credentials: "include" },
-        );
-
-        if (!res.ok) throw new Error("Не удалось загрузить профиль");
-
-        const data = await res.json();
-
-        setForm({
-          email: data.email,
-          username: data.username,
-          name: data.name,
-          middleName: data.middleName || "",
-          surname: data.surname,
-        });
-      } catch (err) {
-        console.error(err);
-        alert("Ошибка загрузки профиля");
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchProfile();
-  }, [isAuthenticated, router]);
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -117,11 +144,11 @@ export default function ProfilePage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-pink-50 via-rose-50 to-white py-12 px-4">
+    <div className="min-h-screen bg-linear-to-br from-pink-50 via-rose-50 to-white py-12 px-4">
       <div className="max-w-3xl mx-auto">
         <div className="bg-white rounded-3xl shadow-xl overflow-hidden">
           {/* Header */}
-          <div className="bg-gradient-to-r from-rose-600 to-pink-600 p-8 text-white">
+          <div className="bg-linear-to-r from-rose-600 to-pink-600 p-8 text-white">
             <div className="flex items-center gap-4">
               <div className="w-20 h-20 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center">
                 <User size={40} />

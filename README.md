@@ -54,7 +54,9 @@ You can check out [the Next.js GitHub repository](https://github.com/vercel/next
 
 3 simple commands for build containers with docker
 
-```bash 
+```bash
+docker-compose down -v
+docker-compose up -d --build 
 docker-compose down
 docker-compose build --no-cache
 docker-compose up -d

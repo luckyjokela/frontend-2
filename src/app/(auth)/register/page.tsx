@@ -5,6 +5,9 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Cake, Eye, EyeOff } from "lucide-react";
 
+const API_BASE = "/api";
+// const API_BASE = 'http://localhost:3001/';
+
 export default function RegisterPage() {
   const [formData, setFormData] = useState({
     email: "",
@@ -38,7 +41,7 @@ export default function RegisterPage() {
 
     try {
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_SERVER_URL}/auth/register`,
+        `${API_BASE}/auth/register`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -75,7 +78,7 @@ export default function RegisterPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-pink-50 via-rose-50 to-white flex items-center justify-center py-12 px-4">
+    <div className="min-h-screen bg-linear-to-br from-pink-50 via-rose-50 to-white flex items-center justify-center py-12 px-4">
       <div className="max-w-md w-full">
         {/* Logo */}
         <div className="text-center mb-8">

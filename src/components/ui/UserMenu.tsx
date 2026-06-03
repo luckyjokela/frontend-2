@@ -2,7 +2,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import { User, LogOut, Settings, UserCircle } from "lucide-react";
+import { User, LogOut, Settings, UserCircle, LogIn } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useUserStore } from "@/store/useUserStore";
@@ -23,26 +23,38 @@ export default function UserMenu() {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
+    try {
+      await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/auth/logout`, {
+        method: "POST",
+        credentials: "include",
+      });
+    } catch (err) {
+      console.error("Logout error:", err);
+    }
+    
     logout();
     localStorage.removeItem("access_token");
     localStorage.removeItem("refresh_token");
     setIsOpen(false);
     router.push("/");
+    router.refresh();
   };
 
+  // Если НЕ авторизован — показываем кнопку "Войти"
   if (!isAuthenticated) {
     return (
       <Link
         href="/login"
         className="flex items-center gap-2 px-4 py-2 bg-rose-600 text-white rounded-full font-semibold hover:bg-rose-700 transition shadow-md hover:shadow-lg"
       >
-        <User size={18} />
-        <span className="hidden sm:inline">Войти</span>
+        <LogIn size={18} />
+        <span className="font-medium">Войти</span>
       </Link>
     );
   }
 
+  // Если авторизован — показываем меню пользователя
   return (
     <div className="relative" ref={menuRef}>
       <button
@@ -58,6 +70,7 @@ export default function UserMenu() {
             <p className="text-sm font-bold text-slate-900">Мой аккаунт</p>
             <p className="text-xs text-slate-500">Управление профилем</p>
           </div>
+          
           <Link
             href="/user/profile"
             onClick={() => setIsOpen(false)}
@@ -66,6 +79,7 @@ export default function UserMenu() {
             <User size={18} className="text-rose-600" />
             <span className="font-medium">Профиль</span>
           </Link>
+          
           <Link
             href="/user/orders"
             onClick={() => setIsOpen(false)}
@@ -74,6 +88,7 @@ export default function UserMenu() {
             <Settings size={18} className="text-rose-600" />
             <span className="font-medium">Мои заказы</span>
           </Link>
+          
           <div className="border-t border-slate-100 mt-2 pt-2">
             <button
               onClick={handleLogout}

@@ -5,7 +5,10 @@ export async function GET(request: NextRequest) {
 
   const cookie = request.headers.get("cookie") || "";
 
-  const res = await fetch(`${serverUrl}/user/me`, {
+  const API_BASE = "/api";
+  // const API_BASE = 'http://localhost:3001/';
+
+  const res = await fetch(`${API_BASE}/user/profile`, {
     method: "GET",
     headers: {
       "Content-Type": "application/json",

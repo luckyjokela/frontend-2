@@ -1,5 +1,8 @@
 import { create } from "zustand";
 
+const API_BASE = "/api";
+// const API_BASE = 'http://localhost:3001/';
+
 interface ProfileData {
   email?: string;
   username?: string;
@@ -29,7 +32,7 @@ export const useUserStore = create<UserState>((set) => ({
   },
 
   logout: async () => {
-    await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/auth/logout`, {
+    await fetch(`${API_BASE}/auth/logout`, {
       method: "POST",
       credentials: "include",
     });
@@ -63,8 +66,8 @@ export const useUserStore = create<UserState>((set) => ({
           email: newUser.email,
           username: newUser.username,
           name: newUser.name,
-          middleName: newUser.middleName,
           surname: newUser.surname,
+          middleName: newUser.middleName,
         }),
       );
 

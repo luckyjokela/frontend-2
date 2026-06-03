@@ -73,7 +73,7 @@ export default function ChangePasswordPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-pink-50 via-rose-50 to-white py-12 px-4">
+    <div className="min-h-screen bg-linear-to-br from-pink-50 via-rose-50 to-white py-12 px-4">
       <div className="max-w-md mx-auto">
         <Link
           href="/user/profile"
