@@ -45,7 +45,7 @@ export default function ContactPage() {
                   </div>
                   <div>
                     <p className="text-sm text-slate-500 font-medium">
-                      Телефон / WhatsApp
+                      Телефон
                     </p>
                     <p className="text-lg font-bold text-slate-900">
                       +7 (999) 123-45-67
@@ -60,7 +60,7 @@ export default function ContactPage() {
                   <div>
                     <p className="text-sm text-slate-500 font-medium">Email</p>
                     <p className="text-lg font-bold text-slate-900">
-                      hello@cakecraft.ru
+                      loverumpy-pumpy@cakecraft.ru
                     </p>
                   </div>
                 </div>
@@ -74,7 +74,7 @@ export default function ContactPage() {
                       Кондитерская и пункт выдачи
                     </p>
                     <p className="text-lg font-bold text-slate-900">
-                      г. Москва, ул. Сладкая, 15
+                      г. Москва, Медовый переулок, д. 5, стр. 1
                     </p>
                   </div>
                 </div>

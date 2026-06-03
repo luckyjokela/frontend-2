@@ -2,7 +2,14 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import { User, LogOut, Settings, UserCircle, LogIn } from "lucide-react";
+import {
+  User,
+  LogOut,
+  Settings,
+  UserCircle,
+  LogIn,
+  Briefcase,
+} from "lucide-react"; // ← ДОБАВИТЬ Briefcase!
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useUserStore } from "@/store/useUserStore";
@@ -11,7 +18,12 @@ export default function UserMenu() {
   const [isOpen, setIsOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
-  const { isAuthenticated, logout } = useUserStore();
+  const { isAuthenticated, logout, role } = useUserStore(); // ← ДОБАВИТЬ role!
+
+  // ← Определяем правильный путь в зависимости от роли!
+  const isMaker = role === "maker" || role === "MAKER";
+  const profilePath = isMaker ? "/maker/profile" : "/user/profile";
+  const ordersPath = isMaker ? "/maker/orders" : "/user/orders";
 
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
@@ -32,7 +44,7 @@ export default function UserMenu() {
     } catch (err) {
       console.error("Logout error:", err);
     }
-    
+
     logout();
     localStorage.removeItem("access_token");
     localStorage.removeItem("refresh_token");
@@ -70,25 +82,35 @@ export default function UserMenu() {
             <p className="text-sm font-bold text-slate-900">Мой аккаунт</p>
             <p className="text-xs text-slate-500">Управление профилем</p>
           </div>
-          
+
+          {/* ← ДИНАМИЧЕСКАЯ ССЫЛКА НА ПРОФИЛЬ! */}
           <Link
-            href="/user/profile"
+            href={profilePath} // ← ИЗМЕНИТЬ!
             onClick={() => setIsOpen(false)}
             className="flex items-center gap-3 px-4 py-3 hover:bg-slate-50 transition text-slate-700"
           >
-            <User size={18} className="text-rose-600" />
-            <span className="font-medium">Профиль</span>
+            {isMaker ? (
+              <Briefcase size={18} className="text-rose-600" />
+            ) : (
+              <User size={18} className="text-rose-600" />
+            )}
+            <span className="font-medium">
+              {isMaker ? "Профиль кондитера" : "Профиль"}
+            </span>
           </Link>
-          
+
+          {/* ← ДИНАМИЧЕСКАЯ ССЫЛКА НА ЗАКАЗЫ! */}
           <Link
-            href="/user/orders"
+            href={ordersPath} // ← ИЗМЕНИТЬ!
             onClick={() => setIsOpen(false)}
             className="flex items-center gap-3 px-4 py-3 hover:bg-slate-50 transition text-slate-700"
           >
             <Settings size={18} className="text-rose-600" />
-            <span className="font-medium">Мои заказы</span>
+            <span className="font-medium">
+              {isMaker ? "Заказы кондитера" : "Мои заказы"}
+            </span>
           </Link>
-          
+
           <div className="border-t border-slate-100 mt-2 pt-2">
             <button
               onClick={handleLogout}

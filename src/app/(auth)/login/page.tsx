@@ -36,6 +36,8 @@ export default function LoginPage() {
 
       const data = await response.json();
 
+      
+
       if (!response.ok) {
         throw new Error(data.error || data.message || "Ошибка входа");
       }
@@ -53,7 +55,8 @@ export default function LoginPage() {
       const profile = await profileRes.json();
       // login(profile.id, profile.email, profile.username);
       // login(profile.userId, profile.email, profile.username);
-       login(profile.id, profile.email, profile.username);
+      //  login(profile.id, profile.email, profile.username);
+      login(profile.id, profile.email, profile.username, profile.role);
 
       router.push("/user/profile");
       router.refresh();

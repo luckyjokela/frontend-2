@@ -3,41 +3,41 @@
 import { Heart, ArrowRight, Star, Truck, Shield, Clock } from "lucide-react";
 
 const cakes = [
-  {
+{
     id: 1,
     name: "Свадебный торт",
-    price: "10 500 ₽",
+    price: "10 500 руб.",
     category: "Свадебные",
-    image:
-      "https://images.unsplash.com/photo-1535254973040-607b474cb50d?w=600&h=600&fit=crop",
+    image: "/cake1.jpg",
     rating: 4.9,
+    description: "Многоярусный торт с мастикой",
   },
   {
     id: 2,
     name: "Шоколадный трюфель",
-    price: "7 900 ₽",
+    price: "7900 руб.",
     category: "Шоколадные",
-    image:
-      "https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=600&h=600&fit=crop",
+    image: "/cake2.jpg",
     rating: 4.8,
+    description: "Насыщенный шоколад с ганашем",
   },
   {
     id: 3,
     name: "Ягодный микс",
-    price: "5 400 ₽",
+    price: "5400 руб.",
     category: "Ягодные",
-    image:
-      "https://images.unsplash.com/photo-1464349095431-e9a21285b5f3?w=600&h=600&fit=crop",
+    image: "/cake3.jpg",
     rating: 4.7,
+    description: "Свежие ягоды и лёгкий крем",
   },
   {
     id: 4,
     name: "Веганский чизкейк",
-    price: "3 500 ₽",
+    price: "3500 руб.",
     category: "Веганские",
-    image:
-      "https://images.unsplash.com/photo-1565958011703-44f9829ba187?w=600&h=600&fit=crop",
+    image: "/cake4.jpg",
     rating: 4.8,
+    description: "Без молочных продуктов",
   },
 ];
 
@@ -78,7 +78,7 @@ export default function HomePage() {
               <div className="absolute -top-20 -right-20 w-64 h-64 bg-rose-200 rounded-full blur-3xl opacity-50 hidden sm:block"></div>
               <div className="relative rounded-3xl overflow-hidden shadow-2xl bg-slate-200">
                 <img
-                  src="https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=800&h=600&fit=crop"
+                  src="/cake2.jpg"
                   alt="Главный торт"
                   className="w-full h-auto object-cover"
                   onError={(e) => {

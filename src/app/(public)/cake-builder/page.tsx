@@ -9,6 +9,9 @@ import {
   Check,
   AlertCircle,
 } from "lucide-react";
+import { useOrderStore } from "@/store/useOrderStore";
+import { useUserStore } from "@/store/useUserStore";
+import { useRouter } from "next/navigation";
 
 const CAKE_TYPES = [
   { id: 1, name: "Классический", price: 2500, image: "🎂" },
@@ -46,6 +49,10 @@ const DECORATIONS = [
 ];
 
 export default function CakeBuilder() {
+  const { addToCart } = useOrderStore(); // ← ДОБАВИТЬ!
+  const { isAuthenticated } = useUserStore(); // ← ДОБАВИТЬ!
+  const router = useRouter(); // ← ДОБАВИТЬ!
+
   const [step, setStep] = useState(1);
   const [selectedType, setSelectedType] = useState<number | null>(null);
   const [selectedLayers, setSelectedLayers] = useState<number[]>([1]);
@@ -69,6 +76,7 @@ export default function CakeBuilder() {
   // Расчёт цены с оптимизацией
   const totalPrice = useMemo(() => {
     if (!selectedType) return 0;
+
     const typePrice = CAKE_TYPES.find((t) => t.id === selectedType)?.price || 0;
     const layersPrice = selectedLayers.reduce(
       (sum, id) => sum + (LAYERS.find((l) => l.id === id)?.price || 0),
@@ -80,7 +88,13 @@ export default function CakeBuilder() {
     );
     const decorationPrice =
       DECORATIONS.find((d) => d.id === selectedDecoration)?.price || 0;
-    return (typePrice + layersPrice + fillingsPrice + decorationPrice) * weight;
+
+    // ← ИСПРАВЛЕНИЕ: умножаем на количество коржей!
+    const totalWeight = weight * selectedLayers.length;
+
+    return (
+      (typePrice + layersPrice + fillingsPrice + decorationPrice) * totalWeight
+    );
   }, [
     selectedType,
     selectedLayers,
@@ -130,34 +144,46 @@ export default function CakeBuilder() {
       setError("Укажите дату получения");
       return;
     }
+
+    if (!isAuthenticated) {
+      router.push("/login");
+      return;
+    }
+
     setError(null);
     setIsSubmitting(true);
 
     try {
-      // Формируем данные заказа
-      const orderData = {
-        cakeType: selectedType,
-        layers: selectedLayers,
-        fillings: selectedFillings,
-        decoration: selectedDecoration,
-        weight,
-        requestedDate: date,
-        comment: comment.trim(), // <-- Поле для пожеланий
-        totalPrice,
+      const selectedCakeType = CAKE_TYPES.find((t) => t.id === selectedType);
+
+      // ← Вычисляем общий вес!
+      const totalWeight = weight * selectedLayers.length;
+
+      const orderItem = {
+        id: `custom-${Date.now()}`,
+        name: `Индивидуальный торт: ${selectedCakeType?.name || "Custom"}`,
+        price: totalPrice,
+        quantity: 1,
+        options: {
+          layers: selectedLayers
+            .map((id) => LAYERS.find((l) => l.id === id)?.name)
+            .filter((name): name is string => name !== undefined),
+          fillings: selectedFillings
+            .map((id) => FILLINGS.find((f) => f.id === id)?.name)
+            .filter((name): name is string => name !== undefined),
+          decoration:
+            DECORATIONS.find((d) => d.id === selectedDecoration)?.name ||
+            "Без декора",
+          weight: totalWeight, // ← Сохраняем общий вес!
+          comment: comment.trim(),
+          requestedDate: date,
+        },
       };
 
-      // Здесь будет fetch к твоему API
-      // const res = await fetch("/api/orders", {
-      //   method: "POST",
-      //   headers: { "Content-Type": "application/json" },
-      //   body: JSON.stringify(orderData)
-      // });
+      addToCart(orderItem);
+      alert("✅ Торт добавлен в корзину!");
 
-      // Для демо просто эмулируем задержку
-      await new Promise((res) => setTimeout(res, 800));
-      alert("✅ Заказ успешно создан! (Демо-режим)");
-
-      // Сброс формы при успехе
+      // Сброс формы
       setStep(1);
       setSelectedType(null);
       setSelectedLayers([1]);
@@ -165,7 +191,9 @@ export default function CakeBuilder() {
       setSelectedDecoration(1);
       setWeight(2);
       setDate("");
-      setComment(""); // <-- Очищаем комментарий
+      setComment("");
+
+      router.push("/cart");
     } catch (err) {
       setError("Ошибка при оформлении. Попробуйте позже.");
     } finally {
@@ -180,7 +208,7 @@ export default function CakeBuilder() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-pink-50 via-rose-50 to-white py-12 px-4">
+    <div className="min-h-screen bg-linear-to-br from-pink-50 via-rose-50 to-white py-12 px-4">
       <div className="max-w-4xl mx-auto">
         <div className="text-center mb-8">
           <h1 className="text-4xl font-bold text-slate-800 mb-2">
@@ -489,7 +517,7 @@ export default function CakeBuilder() {
               disabled={isSubmitting || !canProceed()}
               className="flex items-center gap-2 px-8 py-3 bg-gradient-to-r from-rose-600 to-pink-600 hover:from-rose-700 hover:to-pink-700 disabled:bg-slate-300 disabled:cursor-not-allowed text-white rounded-xl font-medium transition shadow-lg shadow-rose-200"
             >
-              {isSubmitting ? "Создаём..." : "Оформить заказ"}{" "}
+              {isSubmitting ? "Создаём..." : "Добавить в корзину"}{" "}
               {!isSubmitting && <Check size={20} />}
             </button>
           )}

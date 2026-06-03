@@ -13,6 +13,7 @@ import {
   Edit2,
   Save,
   Lock,
+  Briefcase,
 } from "lucide-react";
 
 export default function ProfilePage() {
@@ -32,67 +33,47 @@ export default function ProfilePage() {
   const [loading, setLoading] = useState(true);
   const [editMode, setEditMode] = useState(false);
 
-  // useEffect(() => {
-  //   if (!isAuthenticated) {
-  //     router.push("/login");
-  //     return;
-  //   }
-
-  //   const fetchProfile = async () => {
-  //     try {
-  //       const res = await fetch(
-  //         `${process.env.NEXT_PUBLIC_SERVER_URL}/user/profile`,
-  //         { credentials: "include" },
-  //       );
-
-  //       if (!res.ok) throw new Error("Не удалось загрузить профиль");
-
-  //       const data = await res.json();
-
-  //       setForm({
-  //         email: data.email,
-  //         username: data.username,
-  //         name: data.name,
-  //         middleName: data.middleName || "",
-  //         surname: data.surname,
-  //       });
-  //     } catch (err) {
-  //       console.error(err);
-  //       alert("Ошибка загрузки профиля");
-  //     } finally {
-  //       setLoading(false);
-  //     }
-  //   };
-
-  //   fetchProfile();
-  // }, [isAuthenticated, router]);
-
   useEffect(() => {
-    // Для демо: загружаем профиль если есть данные, иначе моковые
-    if (!isAuthenticated || isAuthenticated) {
-  //     fetchProfile(
-        //         const data = await res.json();
-
-        // setForm({
-        //   email: data.email,
-        //   username: data.username,
-        //   name: data.name,
-        //   middleName: data.middleName || "",
-        //   surname: data.surname,
-        // });
-  //     );
-    } else {
-      // Моковые данные для демо
-      setForm({
-        email: "demo@cakecraft.ru",
-        username: "DemoUser",
-        name: "Демо",
-        middleName: "",
-        surname: "Пользователь",
-      });
-      setLoading(false);
+    if (!isAuthenticated) {
+      router.push("/login");
+      return;
     }
-  }, []);
+
+    const fetchProfile = async () => {
+      try {
+        const res = await fetch(
+          `${process.env.NEXT_PUBLIC_SERVER_URL}/user/profile`,
+          { credentials: "include" },
+        );
+
+        if (!res.ok) throw new Error("Не удалось загрузить профиль");
+
+        const data = await res.json();
+
+        // ← ДОБАВИТЬ!
+        if (data.role) {
+          // Импортируй updateRole из useUserStore
+          const { updateRole } = useUserStore.getState();
+          updateRole(data.role);
+        }
+
+        setForm({
+          email: data.email,
+          username: data.username,
+          name: data.name,
+          middleName: data.middleName || "",
+          surname: data.surname,
+        });
+      } catch (err) {
+        console.error(err);
+        alert("Ошибка загрузки профиля");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchProfile();
+  }, [isAuthenticated, router]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -104,7 +85,14 @@ export default function ProfilePage() {
         {
           method: "PATCH",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ id, ...form }),
+          body: JSON.stringify({
+            // ← НЕ ОТПРАВЛЯЙ id! Backend берёт его из JWT
+            email: form.email,
+            username: form.username,
+            name: form.name,
+            surname: form.surname,
+            middleName: form.middleName,
+          }),
           credentials: "include",
         },
       );
@@ -301,6 +289,13 @@ export default function ProfilePage() {
                 >
                   <Calendar size={20} className="text-rose-600" />
                   <span className="font-medium">Мои заказы</span>
+                </Link>
+                <Link
+                  href="/become-maker" // или сделай модалку
+                  className="flex items-center gap-3 p-4 bg-rose-50 rounded-xl hover:bg-rose-100 transition text-rose-700"
+                >
+                  <Briefcase size={20} className="text-rose-600" />
+                  <span className="font-medium">Стать кондитером</span>
                 </Link>
               </div>
             </div>

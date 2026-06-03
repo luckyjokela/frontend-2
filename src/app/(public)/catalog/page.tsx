@@ -1,7 +1,15 @@
 "use client";
 
 import { useState } from "react";
-import { Heart, Star, Filter, ChevronDown, LayoutGrid, List } from "lucide-react";
+import {
+  Heart,
+  Star,
+  Filter,
+  ChevronDown,
+  LayoutGrid,
+  List,
+} from "lucide-react";
+import { useOrderStore } from "@/store/useOrderStore";
 
 const cakes = [
   {
@@ -9,7 +17,7 @@ const cakes = [
     name: "Свадебный торт",
     price: 10500,
     category: "Свадебные",
-    image: "https://images.unsplash.com/photo-1535254973040-607b474cb50d?w=600&h=600&fit=crop",
+    image: "/cake1.jpg",
     rating: 4.9,
     description: "Многоярусный торт с мастикой",
   },
@@ -18,7 +26,7 @@ const cakes = [
     name: "Шоколадный трюфель",
     price: 7900,
     category: "Шоколадные",
-    image: "https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=600&h=600&fit=crop",
+    image: "/cake2.jpg",
     rating: 4.8,
     description: "Насыщенный шоколад с ганашем",
   },
@@ -27,7 +35,7 @@ const cakes = [
     name: "Ягодный микс",
     price: 5400,
     category: "Ягодные",
-    image: "https://images.unsplash.com/photo-1464349095431-e9a21285b5f3?w=600&h=600&fit=crop",
+    image: "/cake3.jpg",
     rating: 4.7,
     description: "Свежие ягоды и лёгкий крем",
   },
@@ -36,7 +44,7 @@ const cakes = [
     name: "Веганский чизкейк",
     price: 3500,
     category: "Веганские",
-    image: "https://images.unsplash.com/photo-1565958011703-44f9829ba187?w=600&h=600&fit=crop",
+    image: "/cake4.jpg",
     rating: 4.8,
     description: "Без молочных продуктов",
   },
@@ -45,7 +53,7 @@ const cakes = [
     name: "Красный бархат",
     price: 7200,
     category: "Классические",
-    image: "https://images.unsplash.com/photo-1586985289688-ca3cf47d3e6e?w=600&h=600&fit=crop",
+    image: "/cake5.jpg",
     rating: 4.9,
     description: "Классический американский торт",
   },
@@ -54,22 +62,34 @@ const cakes = [
     name: "Детский праздник",
     price: 5500,
     category: "Детские",
-    image: "https://images.unsplash.com/photo-1558301211-0d8c8ddee6ec?w=600&h=600&fit=crop",
+    image: "/cake6.jpg",
     rating: 4.6,
     description: "Яркий торт с фигурками",
   },
 ];
 
-const categories = ["Все", "Свадебные", "Шоколадные", "Ягодные", "Веганские", "Классические", "Детские"];
+const categories = [
+  "Все",
+  "Свадебные",
+  "Шоколадные",
+  "Ягодные",
+  "Веганские",
+  "Классические",
+  "Детские",
+];
 
 export default function CatalogPage() {
+  const { addToCart } = useOrderStore(); // ← ВНУТРИ КОМПОНЕНТА!
   const [activeCategory, setActiveCategory] = useState("Все");
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
-  const [sortBy, setSortBy] = useState<"popular" | "price-asc" | "price-desc">("popular");
+  const [sortBy, setSortBy] = useState<"popular" | "price-asc" | "price-desc">(
+    "popular",
+  );
 
-  const filteredProducts = activeCategory === "Все"
-    ? cakes
-    : cakes.filter((c) => c.category === activeCategory);
+  const filteredProducts =
+    activeCategory === "Все"
+      ? cakes
+      : cakes.filter((c) => c.category === activeCategory);
 
   const sortedProducts = [...filteredProducts].sort((a, b) => {
     if (sortBy === "price-asc") return a.price - b.price;
@@ -77,8 +97,20 @@ export default function CatalogPage() {
     return b.rating - a.rating;
   });
 
+  const handleAddToCart = (cake: any) => {
+    addToCart({
+      id: cake.id.toString(),
+      name: cake.name,
+      price: cake.price,
+      quantity: 1,
+      image: cake.image,
+    });
+
+    alert(`${cake.name} добавлен в корзину!`);
+  };
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-pink-50 via-rose-50 to-white">
+    <div className="min-h-screen bg-linear-to-br from-pink-50 via-rose-50 to-white">
       {/* --- ЗАГОЛОВОК --- */}
       <header className="bg-white/80 backdrop-blur-md border-b border-rose-200 py-12">
         <div className="max-w-7xl mx-auto px-4">
@@ -158,7 +190,7 @@ export default function CatalogPage() {
                   <List size={20} />
                 </button>
               </div>
-              
+
               <select
                 value={sortBy}
                 onChange={(e) => setSortBy(e.target.value as any)}
@@ -171,11 +203,13 @@ export default function CatalogPage() {
             </div>
 
             {/* Товары */}
-            <div className={`grid gap-6 ${
-              viewMode === "grid" 
-                ? "grid-cols-1 sm:grid-cols-2 xl:grid-cols-3" 
-                : "grid-cols-1"
-            }`}>
+            <div
+              className={`grid gap-6 ${
+                viewMode === "grid"
+                  ? "grid-cols-1 sm:grid-cols-2 xl:grid-cols-3"
+                  : "grid-cols-1"
+              }`}
+            >
               {sortedProducts.map((cake) => (
                 <div
                   key={cake.id}
@@ -183,17 +217,15 @@ export default function CatalogPage() {
                     viewMode === "list" ? "flex" : ""
                   }`}
                 >
-                  <div className={`relative ${
-                    viewMode === "list" ? "w-1/3" : "aspect-square"
-                  } overflow-hidden bg-slate-100`}>
+                  <div
+                    className={`relative ${
+                      viewMode === "list" ? "w-1/3" : "aspect-square"
+                    } overflow-hidden bg-slate-100`}
+                  >
                     <img
                       src={cake.image}
                       alt={cake.name}
                       className="w-full h-full object-cover transition duration-500 group-hover:scale-110"
-                      onError={(e) => {
-                        (e.target as HTMLImageElement).src = 
-                          `https://via.placeholder.com/400x400/fce7f3/f43f5e?text=${encodeURIComponent(cake.name)}`;
-                      }}
                     />
                     <div className="absolute top-3 left-3">
                       <span className="bg-white/95 backdrop-blur-sm px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider text-rose-600 shadow-sm">
@@ -204,21 +236,31 @@ export default function CatalogPage() {
                       <Heart size={18} />
                     </button>
                   </div>
-                  
+
                   <div className={`p-5 ${viewMode === "list" ? "flex-1" : ""}`}>
                     <div className="flex items-center gap-1 mb-2">
-                      <Star size={14} className="text-yellow-500 fill-yellow-500" />
-                      <span className="text-sm font-medium text-slate-600">{cake.rating}</span>
+                      <Star
+                        size={14}
+                        className="text-yellow-500 fill-yellow-500"
+                      />
+                      <span className="text-sm font-medium text-slate-600">
+                        {cake.rating}
+                      </span>
                     </div>
                     <h3 className="font-bold text-lg text-slate-800 mb-2 group-hover:text-rose-600 transition-colors">
                       {cake.name}
                     </h3>
-                    <p className="text-sm text-slate-500 mb-4">{cake.description}</p>
+                    <p className="text-sm text-slate-500 mb-4">
+                      {cake.description}
+                    </p>
                     <div className="flex items-center justify-between">
                       <p className="text-2xl font-black text-rose-600">
                         {cake.price.toLocaleString()} ₽
                       </p>
-                      <button className="px-6 py-2.5 bg-rose-600 text-white rounded-xl font-bold text-sm hover:bg-rose-700 transition-colors shadow-lg shadow-rose-200 hover:shadow-xl hover:shadow-rose-300 transform active:scale-95">
+                      <button
+                        onClick={() => handleAddToCart(cake)}
+                        className="px-6 py-2.5 bg-rose-600 text-white rounded-xl font-bold text-sm hover:bg-rose-700 transition-colors shadow-lg shadow-rose-200 hover:shadow-xl hover:shadow-rose-300 transform active:scale-95"
+                      >
                         В корзину
                       </button>
                     </div>
@@ -229,7 +271,9 @@ export default function CatalogPage() {
 
             {sortedProducts.length === 0 && (
               <div className="text-center py-20 bg-white rounded-2xl">
-                <p className="text-slate-400 text-lg">В этой категории пока нет тортов.</p>
+                <p className="text-slate-400 text-lg">
+                  В этой категории пока нет тортов.
+                </p>
               </div>
             )}
           </div>
